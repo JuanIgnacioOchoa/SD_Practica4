@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define NICK_SIZE 20
 #define STR_SIZE 40
@@ -53,13 +54,13 @@ int main()
     pthread_create(&tid[0], NULL, writeS, (void *)&ch);
     pthread_create(&tid[1], NULL, readS, (void *)&ch);
 
-    int i;
+    /* int i;
     for (i = 0; i < 2; i++)
     {
         pthread_join(tid[i], NULL);
-    }
-
-    free(ch);
+    } */
+    pthread_join(tid[0], NULL);
+    //free(ch);
 
     exit(0);
 }
@@ -71,11 +72,14 @@ void *writeS(void *arg)
     {
         //printf("scanning\n");
         fgets(str, STR_SIZE, stdin);
+        if(strcmp("EXIT\n", str) == 0) {
+            break;
+        }
         //printf("%s\n", str);
         write(sockfd, &str, sizeof(str));
         sleep(1);
     }
-    free(str);
+    //free(str);
     //return;
 }
 void *readS(void *arg)
